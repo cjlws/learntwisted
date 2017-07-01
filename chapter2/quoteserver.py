@@ -3,13 +3,14 @@ from twisted.internet import reactor, protocol
 
 class QuoteProtocol(protocol.Protocol):
     def __init__(self, factory):
+	print "QuoteProtocol Init"
 	self.factory = factory
 
     def connectionMade(self):
 	self.factory.numConnections += 1
 
-    def dataRecieved(self, data):
-	print "Number of active connections: %d" % (self.factory.numConnections,)
+    def dataReceived(self, data):
+	print "Number of active connections: %d" % (self.factory.numConnections)
 	print "> Received: ``%s''\n> Sending: ``%s''" % (data, self.getQuote())
 	self.transport.write(self.getQuote())
 	self.updateQuote(data)
@@ -27,6 +28,7 @@ class QuoteFactory(Factory):
     numConnections = 0
 
     def __init__(self, quote=None):
+	print "QuoteFactory Init" 
 	self.quote = quote or "An apple a day keeps the doctor away"
 
     def buildProtocol(self, addr):

@@ -2,19 +2,22 @@ from twisted.internet import reactor, protocol
 
 class QuoteProtocol(protocol.Protocol):
     def __init__(self, factory):
+	print "Quote Protocol Init"
 	self.factory = factory
 
     def connectionMade(self):
+	print "Client Connection Made"
 	self.sendQuote()
 
     def sendQuote(self):
+	print "Send Quote Ran"
 	self.transport.write(self.factory.quote)
 
     def dataReceived(self, data):
 	print "Received quote:", data
 	self.transport.loseConnection()
 
-class QuoteClientFactory(protocol.ClientFactoy):
+class QuoteClientFactory(protocol.ClientFactory):
     def __init__(self, quote):
 	self.quote = quote
 
@@ -41,8 +44,10 @@ quotes = [
     "Carpe diem"
 ]
 quote_counter = len(quotes)
+print quote_counter
 
 for quote in quotes:
+    print "New Quote"
     reactor.connectTCP('localhost', 8000, QuoteClientFactory(quote))
 reactor.run()
 
